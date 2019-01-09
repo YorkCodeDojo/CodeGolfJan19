@@ -1,7 +1,8 @@
 ﻿public class Program { public static void Main() {
 var a="I'll tell you what I want, what I really, really want\r\nSo tell me what you want, what you really, really want\r\n";
 var c="\r\nIf you wanna be my lover, you ";
-var e="I wanna, (ha) I wanna, (ha) I wanna, (ha) I wanna, (ha)\r\nI wanna really, really, really wanna zigazig ah";
+var b=", (ha) I wanna";
+var e= $"I wanna{b}{b}{b}, (ha)\r\nI wanna really, really, really wanna zigazig ah";
 var f="otta get with my friends";
 System.Console.Write($@"Ha ha ha ha ha
 Yo, {a}{a}{e}
