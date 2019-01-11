@@ -11,10 +11,10 @@ import qualified Data.Set as S
 main :: IO ()
 main = do
   targetBytes <- B.readFile "Target.txt"
-  let unused = (++ [45..64]) $ take 7 $ S.toList $ S.fromList [35..126] `S.difference` S.fromList ([45..64] ++ [92] ++ (B.unpack targetBytes))
+  let unused = [45..64]
   print unused
   print $ B.pack unused
-  let m = go [B.map (\w -> if w == 0x0a then 0x24 else w) targetBytes, B.singleton 0x0a] $ drop 2 unused
+  let m = go [B.map (\w -> if w == 0x0a then 46 else w) targetBytes, B.singleton 0x0a] $ drop 2 unused
   print m
   print $ length $ show m
   print $ length m
