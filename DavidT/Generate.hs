@@ -6,17 +6,22 @@ import Data.List
 import qualified Data.ByteString as B
 import Data.Word
 import Data.Ord
+import qualified Data.Set as S
 
 main :: IO ()
 main = do
   targetBytes <- B.readFile "Target.txt"
-  print $ B.intercalate (B.singleton 124) $ go [targetBytes] [46..64]
+  let unused = (++ [45..64]) $ take 7 $ S.toList $ S.fromList [35..126] `S.difference` S.fromList ([45..64] ++ [92] ++ (B.unpack targetBytes))
+  print unused
+  print $ B.pack unused
+  let m = go [B.map (\w -> if w == 0x0a then 0x24 else w) targetBytes, B.singleton 0x0a] $ drop 2 unused
+  print m
+  print $ length $ show m
+  print $ length m
+  mapM_ print $ zip (map B.singleton unused) m
 
 saving :: (B.ByteString, [a]) -> Int
-saving (bs, ips) = literalLength bs * (length ips - 1)
-
-literalLength :: B.ByteString -> Int
-literalLength bs = B.length bs + B.length (B.filter (== 0x0a) bs)
+saving (bs, ips) = (B.length bs - 1) * (length ips - 1)
 
 go :: [B.ByteString] -> [Word8] -> [B.ByteString]
 go dictEntries [] = dictEntries
@@ -31,7 +36,7 @@ go dictEntries (w:ws) =
         , let bs = B.take len $ B.drop pos dictEntry
         ]
       dictEntries' = map (replaceAll bs w) dictEntries ++ [bs]
-  in if saving (bs, ips) < 10 then dictEntries else go dictEntries' ws
+  in if saving (bs, ips) < 5 then dictEntries else go dictEntries' ws
 
 replaceAll :: B.ByteString -> Word8 -> B.ByteString -> B.ByteString
 replaceAll bs w = replaceLoop
